@@ -9,10 +9,10 @@ use LWP::UserAgent;
 use Time::Strptime qw/strptime/;
 
 
-#A simple script to query zendesk for tickets with SLA's and determine which needs to be alerted on
-#The Zendesk token needs to be passed in as an environment variable: 'ZD_SLA_TOKEN_URL'
+# A simple script to query zendesk for tickets with SLA's and determine which needs to be alerted on
+# The Zendesk token needs to be passed in as an environment variable: 'ZD_SLA_TOKEN_URL'
 
-# option -t means 'type' of run: either 'upcoming' or 'previous'
+# Option -t means 'type' of run: either 'upcoming' or 'previous'
 our($opt_t);
 getopt('t');
 
@@ -26,28 +26,28 @@ my $SLACK_URL = $ENV{'SLACK_WEBHOOK_URL'};
 
 my @tickets = ();
 
-#view 49880203 - "SLA - breached"
-#view 51165026 - "SLA - < 1 hour to breach"
+# view 49880203 - "SLA - breached"
+# view 51165026 - "SLA - < 1 hour to breach"
 my %views = (
 		'previous' => 49880203, 
 		'upcoming' => 51165026
 );
 
-#Ensure the ZD token is defined. Replace myzendesksubdomain with your zendesk subdomain
+# Ensure the ZD token is defined. Replace myzendesksubdomain with your zendesk subdomain
 die q"You need to supply a Zendesk token: https://<<USER>>%40fastly.com%2Ftoken:<<TOKEN>>@myzendesksubdomain.zendesk.com" unless defined $ZD_TOKEN_URL;
 
-#Ensure there will be a view to execute
+# Ensure there will be a view to execute
 my $type = $views{$opt_t};
 die "You need to define a type of SLA breach to search: -t [upcoming, previous]" unless defined $type;
 
 
 my $request = HTTP::Request->new(GET => $ZD_TOKEN_URL . "/api/v2/views/$type/execute.json");
 
-#Send request to Zendesk
+# Send request to Zendesk
 my $ua = LWP::UserAgent->new;
 my $response = $ua->request($request);
 
-#Only do work if it was successful
+# Only do work if it was successful
 if ($response->is_success){
 	my $json_text  = $response->decoded_content;
 	my $json = JSON->new->allow_nonref;
@@ -93,18 +93,18 @@ my @fields = map {
 		 } @tickets;
 
 
-#Prepare the JSON payload for Slack
+# Prepare the JSON payload for Slack
 my $to_encode = {'attachments' => []};
 $to_encode->{'attachments'}->[0]->{'fallback'} = '[Urgent] Current SLA breaches' . "\n";
 $to_encode->{'attachments'}->[0]->{'pretext'} = '[Urgent] Current SLA breaches' . "\n";
 $to_encode->{'attachments'}->[0]->{'color'} = '#EE0000';
 $to_encode->{'attachments'}->[0]->{'fields'} = \@fields;
 
-#Create JSON parser
+# Create JSON parser
 my $json = JSON->new;
 my $json_text = $json->encode( $to_encode );
 
-#Only send to Slack if there are tickets to alert on
+# Only send to Slack if there are tickets to alert on
 exit unless scalar @tickets;
 
 my $req = HTTP::Request->new( 'POST', $SLACK_URL );
@@ -114,5 +114,5 @@ $req->content( $json_text );
 my $slack_request = LWP::UserAgent->new;
 my $slack_response = $slack_request->request( $req );
 
-#alert if there was a problem sending to Slack
+# Alert if there was a problem sending to Slack
 warn $slack_response->status_line unless $slack_response->is_success;
