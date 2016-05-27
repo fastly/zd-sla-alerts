@@ -3,7 +3,7 @@ For alerting CSE team when a ticket with an SLA has or would soon breach it.
 
 Currently it executes a view in Zendesk, looks at the SLA breach times for the tickets returned and sends a message to a Slack channel with the tickets.
 
-#Usage:
+##Usage:
 
 The Zendesk token info needs to set in an environment variable: $ZD_SLA_TOKEN_URL 
 `https://<<USER>>%40fastly.com%2Ftoken:<<TOKEN>>@fastly.zendesk.com`
@@ -24,7 +24,7 @@ The upcoming SLA breach check can be run more frequently:
 
 
 
-#Required modules
+##Required modules
 
 Getopt::Std
 HTTP::Request
