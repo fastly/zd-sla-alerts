@@ -27,7 +27,11 @@ The upcoming SLA breach check can be run more frequently:
 ##Required modules
 
 Getopt::Std
+
 HTTP::Request
+
 JSON
+
 LWP::UserAgent
+
 Time::Strptime
