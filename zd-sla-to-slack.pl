@@ -11,6 +11,7 @@ use Time::Strptime qw/strptime/;
 
 # A simple script to query zendesk for tickets with SLA's and determine which needs to be alerted on
 # The Zendesk token needs to be passed in as an environment variable: 'ZD_SLA_TOKEN_URL'
+# The Slack webhook URL needs to be passed in as an environment variable: 'SLACK_WEBHOOK_URL'
 
 # Option -t means 'type' of run: either 'upcoming' or 'previous'
 our($opt_t);
@@ -23,6 +24,9 @@ my $ZD_TOKEN_URL = $ENV{'ZD_SLA_TOKEN_URL'};
 # Var should be the full HTTPS hook path
 my $SLACK_URL = $ENV{'SLACK_WEBHOOK_URL'};
 
+# URL of URL for link to ZD ticket
+my $ZD_TICKET_URL = $ENV{'ZD_TICKET_URL'};
+
 
 my @tickets = ();
 
@@ -34,7 +38,7 @@ my %views = (
 );
 
 # Ensure the ZD token is defined. Replace myzendesksubdomain with your zendesk subdomain
-die q"You need to supply a Zendesk token: https://<<USER>>%40fastly.com%2Ftoken:<<TOKEN>>@myzendesksubdomain.zendesk.com" unless defined $ZD_TOKEN_URL;
+die q"You need to supply a Zendesk token: https://<<USER>>%40<<DOMAIN>>%2Ftoken:<<TOKEN>>@myzendesksubdomain.zendesk.com" unless defined $ZD_TOKEN_URL;
 
 # Ensure there will be a view to execute
 my $type = $views{$opt_t};
@@ -66,7 +70,7 @@ if ($response->is_success){
 		}
 
 
-		my $ticket_link = qq'<http://zd.fastly.com/$tid> :: ' . $ticket->{'subject'};
+		my $ticket_link = qq'<$ZD_TICKET_URL$tid> :: ' . $ticket->{'subject'};
 
 		if ($time_to_next_breach =~ m/-/){
 			$time_to_next_breach =~ s/-//;
