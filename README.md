@@ -8,7 +8,7 @@ Currently it executes a view in Zendesk, looks at the SLA breach times for the t
 The Zendesk token info needs to set in an environment variable: $ZD_SLA_TOKEN_URL 
 `https://<<USER>>%40fastly.com%2Ftoken:<<TOKEN>>@fastly.zendesk.com`
 
-Where <<USER> is the Zendesk user's name part of the email and <<TOKEN>> is the Zendesk token.
+Where `<<USER>` is the Zendesk user's name part of the email and `<<TOKEN>>` is the Zendesk token.
 
 `zd-sla-to-slack.pl -t [upcoming, previous] `
 
