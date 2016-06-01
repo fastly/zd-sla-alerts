@@ -18,7 +18,7 @@ getopt('t');
 
 my $yaml = IO::YAML->new('config.yaml');
 $yaml->auto_load(1);
-my $config = <$yaml>;
+my $c = <$yaml>;
 
 #URL composed of basic auth (username + password/token) info from Zendesk
 my $ZD_TOKEN_URL = $c->{'ZD_TOKEN_URL'};
