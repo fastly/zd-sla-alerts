@@ -13,10 +13,14 @@ use LWP::UserAgent;
 #The Zendesk token needs to be passed in as an environment variable: 'ZD_SLA_TOKEN_URL'
 
 # option -t means 'type' of run: either 'upcoming' or 'previous'
-our($opt_t);
-getopt('t');
+our($opt_c,$opt_t);
+getopt('ct');
 
-my $yaml = IO::YAML->new('config.yaml');
+my $CONFIG_FILE = $opt_c;
+
+die qq"You need to supply a config file\n" unless defined $CONFIG_FILE;
+
+my $yaml = IO::YAML->new($CONFIG_FILE);
 $yaml->auto_load(1);
 my $c = <$yaml>;
 
@@ -40,11 +44,11 @@ my %views = (
 my @tickets = ();
 
 #Ensure the ZD token is defined
-die q"You need to supply a Zendesk token: https://<<USER>>%40<<DOMAIN>>.com%2Ftoken:<<TOKEN>>@<<YOUR_ZENDESK_SUBDOMAIN>>" unless defined $ZD_TOKEN_URL;
+die qq"You need to supply a Zendesk token: https://<<USER>>%40<<DOMAIN>>.com%2Ftoken:<<TOKEN>>@<<YOUR_ZENDESK_SUBDOMAIN>>\n" unless defined $ZD_TOKEN_URL;
 
 #Ensure there will be a view to execute
 my $type = $views{$opt_t};
-die "You need to define a type of SLA breach to search: -t [upcoming, previous]" unless defined $type;
+die qq"You need to define a type of SLA breach to search: -t [upcoming, previous]\n" unless defined $type;
 
 
 my $request = HTTP::Request->new(GET => $ZD_TOKEN_URL . "/api/v2/views/$type/execute.json");
