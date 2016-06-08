@@ -6,20 +6,21 @@ Currently it executes a view in Zendesk, looks at the SLA breach times for the t
 ##Usage:
 
 
-`zd-sla-to-slack.pl -t [upcoming, previous] `
+`zd-sla-to-slack.pl -t [upcoming, previous] -c /path/to/config.yaml`
 
 It needs to run at intervals so the CSE can be aware of tickets that need to be acted upon.
 
 So the alerts for tickets that have already breached SLA don't spam continually they should be checked for less frequently, like once or twice per day: 
 
-`zd-sla-to-slack.pl -t previous`
+`zd-sla-to-slack.pl -t previous -c /path/to/config.yaml`
 
 The upcoming SLA breach check can be run more frequently:
 
-`zd-sla-to-slack.pl -t upcoming`.
+`zd-sla-to-slack.pl -t upcoming -c /path/to/config.yaml`.
 
 The the 2 values for the 'types' parameter correspond to views that were created in Zendesk: 1 that returns tickets about to breach their SLA and 1 that returns tickets that have already breached.
 
+The argument for `-c` needs to be the absolute path to the config file, which is in YAML format.
 
 ##Configuration
 
